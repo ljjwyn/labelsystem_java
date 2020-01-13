@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html"
+      ng-app="indexApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!--<link href="css/bootstrap-theme.css" rel="stylesheet">-->
+    <link href="css/jquery-ui.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/sweetalert2.css" rel="stylesheet">
+    <script src="js/angular/1.6.3/angular.js"></script>
+    <script src="js/angular/1.6.3/angular-route.js"></script>
+    <script src="js/angular/1.6.3/angular-ui-router.js"></script>
+    <script src="js/angular/1.6.3/angular-file-upload.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="ng/indexApp.js"></script>
+    <script src="ng/relationItemCtrl.js"></script>
+    <title>人工标注系统</title>
+</head>
+<body ng-controller="kgCtrl">
+<div class="container">
+    <div class="col-md-5" style="float: right">
+        <a href="logout" style="float: right; width: 10%">注销</a>
+        <label style="float: right">当前用户名:<font color="red">{{userName}} </font></label>
+    </div>
+    <h3 class="page-header">人工标注系统
+        <a type="button"
+           class="btn btn-info btn-sm btn-block"
+           style="float: right; width: 10%"
+           href="dataset-management.html">标注数据集管理
+        </a>
+    </h3>
+    <div role="main" class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card border-dark">
+                    <h6 class="card-header text-white bg-dark p-2">人工实体-关系提取</h6>
+                    <div class="row">
+                        <div class="col-md-1">
+                            <label for="inputText" class="col-form-label col-form-label-sm">标注数据集</label>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control"
+                                    ng-init="selectedDataSet = dataSetList[0]"
+                                    ng-model="selectedDataSet"
+                                    ng-options="dataSet.dataSetName for dataSet in dataSetList">
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-warning btn-sm btn-block"
+                                    ng-click="loadDataSet()">加载
+                            </button>
+                        </div>
+                        <div class="col-md-7" style="margin-top: 5px">
+                            <label style="float: right">标注率:<font color="red">{{(selectedDataSet.labelRate*100) | number: 2}} %</font></label>
+                            <label>数据集ID:<font color="blue">{{selectedDataSet.id}}</font></label><br>
+                            <label>数据集描述:<font color="red">{{selectedDataSet.dataSetDes}}</font></label>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card" style="margin-bottom: 20px">
+                            <div class="card-body">
+                                <h6 class="page-header">文本分词优化</h6>
+                                <div class="form-group row">
+                                    <div class="row">
+                                        <div class="col-md-12" style="margin-bottom: 10px">
+                                            <div class="col-md-1">
+                                                <label for="inputText" class="col-form-label col-form-label-sm">关键字</label>
+                                            </div>
+                                            <input type="text" class="form-control" placeholder="关键字" ng-model="searchParam"
+                                                   style="width: 30%;display: inline;padding-bottom: 10px">
+                                            <button class="btn btn-info search-btn" ng-click="searchContent()">
+                                                <span class="glyphicon glyphicon-search">检索</span>
+                                            </button>
+                                            <button class="btn btn-success search-btn" ng-click="getLineStr()">
+                                                <span class="glyphicon glyphicon-random"></span>
+                                            </button>
+                                            <label for="inputText" class="col-form-label col-form-label-sm">第<font color="red">{{currentCount}}</font>/<font color="red">{{sumCount}}</font></label>
+                                            <label for="inputText" class="col-form-label col-form-label-sm">  ID:<font color="red">{{IDnum}}</font></label>
+                                            <div class="col-md-2" style="float: right">
+                                                <button class="btn btn-danger btn-sm" ng-click="rebuildSentence()">
+                                                    <span class="glyphicon glyphicon-refresh">重置数据集</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="inputText" class="col-form-label col-form-label-sm">文本</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control form-control-sm" rows="3" id="inputText"
+                                          ng-model="lineStr" placeholder="测试数据集文本"></textarea>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-primary btn-sm btn-block"
+                                                ng-click="isShow=true;wordSegment()">分 词
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm btn-block"
+                                                ng-click="isShow=false;lineStr=undefined">清 空
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" ng-show="isShow">
+                                    <label class="col-md-1 col-form-label col-form-label-sm">分词结果</label>
+                                    <div class="col-md-10">
+                                        <button type="button" class="btn btn-light btn-sm m-1" style="margin-left: 5px;margin-top: 5px"
+                                                ng-repeat="word in wordSegmentResult" ng-click="getEntity(word)">{{word.word}}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" ng-show="isShow">
+                                    <label class="col-md-1 col-form-label col-form-label-sm" style="margin-top: 5px">添加词</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control form-control-sm" id="nWord"
+                                               ng-model="nWord">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-primary btn-sm btn-block" ng-click="addEntities()">添 加</button>
+                                    </div>
+                                    <!--<div class="alert alert-info" role="alert">-->
+                                        <!--<strong>说明 </strong>向词库添加选中的新词并重新分词-->
+                                    <!--</div>-->
+                                    <div class="row">
+                                        <div class="col-sm-8 col-md-8"  style="margin-top: 10px">
+                                            <div class="alert alert-info alert-dismissible" role="alert">
+                                                <strong>说 明</strong> 向词库添加选中的新词并重新分词。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="isShow">
+                            <div class="col-md-12">
+                                <div class="panel panel-collapse">
+                                    <div class="panel-heading">实体类别标注</div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" placeholder="实体" ng-model="entityName"
+                                                       style="width: 100%;display: inline;padding-bottom: 10px" readonly>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <select class="form-control"
+                                                        ng-init="selectedAttrCategory = entityAttrCategories[0]"
+                                                        ng-model="selectedAttrCategory"
+                                                        ng-options="attrCategory for attrCategory in entityAttrCategories">
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary btn-sm btn-block"
+                                                        ng-click="getEntityInfo()">实体详情
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-warning btn-sm btn-block"
+                                                        ng-click="saveEntity()">确认
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" style="float:right">
+                                            <button type="button" class="btn btn-success btn-sm btn-block"
+                                                    style="margin-top: 10px"
+                                                    ng-click="finishedEntity()">实体筛选完成
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-bottom: 20px">
+                            <div class="card-body">
+                                <h6 class="page-header">实体属性（关系）构建</h6>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">实体</div>
+                                            </div>
+                                            <select class="form-control"
+                                                    ng-init="entity1 = entityList[0]"
+                                                    ng-model="entity1"
+                                                    ng-options="entity1 for entity1 in entityList">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">属性一</div>
+                                            </div>
+                                            <select class="form-control"
+                                                    ng-init="selectedEntityToRelation = entityToRelationCategories[0]"
+                                                    ng-model="selectedEntityToRelation"
+                                                    ng-options="rCategory for rCategory in entityToRelationCategories">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">属性值</div>
+                                            </div>
+                                            <select class="form-control"
+                                                    ng-init="attribute = attributeList[0]"
+                                                    ng-model="attribute"
+                                                    ng-options="attribute for attribute in attributeList">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-primary btn-sm btn-block" style="margin-top: 10px"
+                                        ng-click="addEntityToRelation()">添加实体属性</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">实体</div>
+                                            </div>
+                                            <select class="form-control"
+                                                    ng-init="entity2 = entityList[0]"
+                                                    ng-model="entity2"
+                                                    ng-options="entity1 for entity1 in entityList">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">属性二</div>
+                                            </div>
+                                            <select class="form-control"
+                                                    ng-init="selectedEntityToEntity = entityToEntityCategories[0]"
+                                                    ng-model="selectedEntityToEntity"
+                                                    ng-options="rCategory for rCategory in entityToEntityCategories">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">实体</div>
+                                            </div>
+                                            <select class="form-control"
+                                                    ng-init="entity3 = entityList[0]"
+                                                    ng-model="entity3"
+                                                    ng-options="entity1 for entity1 in entityList">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-success btn-sm btn-block" style="margin-top: 15px"
+                                                ng-click="addEntityToEntity()">添加实体关系</button>
+                                    </div>
+                                    <div class="col-md-2" style="float: left">
+                                        <button type="button" class="btn btn-info btn-sm btn-block" style="margin-top: 15px"
+                                                ng-click="finishAndContinue()">
+                                            <span class="glyphicon glyphicon-play"></span>完成</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--<div class="card" style="margin-bottom: 20px">-->
+                            <!--<div class="card-body">-->
+                                <!--<table class="table table-sm table-bordered">-->
+                                    <!--<caption>新增实体属性（关系）</caption>-->
+                                    <!--<thead>-->
+                                    <!--<tr>-->
+                                        <!--<th scope="col">#</th>-->
+                                        <!--<th scope="col">类别</th>-->
+                                        <!--<th scope="col">实体</th>-->
+                                        <!--<th scope="col">属性类别/关系类别</th>-->
+                                        <!--<th scope="col">属性值/实体</th>-->
+                                        <!--<th scope="col">操作</th>-->
+                                    <!--</tr>-->
+                                    <!--</thead>-->
+                                    <!--<tbody>-->
+                                    <!--<tr ng-repeat="eData in entityData">-->
+                                        <!--<th scope="row" ng-bind="$index+1"></th>-->
+                                        <!--<td>{{eData.type}}</td>-->
+                                        <!--<td>{{eData.first}}</td>-->
+                                        <!--<td>{{eData.category}}</td>-->
+                                        <!--<td>{{eData.second}}</td>-->
+                                        <!--<td>-->
+                                            <!--<button type="button" class="btn btn-danger btn-sm">删除-->
+                                            <!--</button>-->
+                                        <!--</td>-->
+                                    <!--</tr>-->
+                                    <!--</tbody>-->
+                                <!--</table>-->
+
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="card" style="margin-bottom: 20px">
+                            <div class="card-body">
+                                <h6 class="page-header">自定义实体、关系类别</h6>
+                                <div class="form-group row">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-primary btn-sm btn-block" style="margin-top: 10px"
+                                                    ng-click="showEntityTpye()">实体类别标签</button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-primary btn-sm btn-block" style="margin-top: 10px"
+                                                    ng-click="showEntityCategories()">实体属性值关系标签</button>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-primary btn-sm btn-block" style="margin-top: 10px"
+                                                    ng-click="showEntityEntity()">实体实体关系标签</button>
+                                        </div>
+                                        <div class="col-md-2" style="float: right">
+                                            <button type="button" class="btn btn-info btn-sm btn-block" style="margin-top: 10px"
+                                                    ng-click="disableLabelSetting()">收起标签自定义</button>
+                                        </div>
+                                    </div>
+                                    <div class="card" style="margin-bottom: 10px" ng-show="labelTabelShow">
+                                        <div class="card-body">
+                                            <h5 class="page-header">设置新标签</h5>
+                                            <div class="form-group row">
+                                                <div class="row">
+                                                    <div class="col-md-1">
+                                                        <label for="inputText" class="col-form-label col-form-label-sm">标签名</label>
+                                                    </div>
+                                                    <input type="text" class="form-control" placeholder="标签名" ng-model="setLabelName"
+                                                           style="width: 30%;display: inline;padding-bottom: 10px">
+                                                </div>
+                                                <div class="row" style="margin-top: 10px">
+                                                    <div class="col-md-1">
+                                                        <label for="inputText" class="col-form-label col-form-label-sm">标签描述</label>
+                                                    </div>
+                                                    <input type="text" class="form-control" placeholder="标签描述" ng-model="setLabelDes"
+                                                           style="width: 30%;display: inline;padding-bottom: 10px">
+                                                </div>
+                                                <button class="btn btn-info search-btn" ng-click="saveLabel()">
+                                                    <span class="glyphicon glyphicon-save">保存</span>
+                                                </button>
+                                            </div>
+                                            <table class="table table-sm table-bordered">
+                                                <caption>新增实体属性（关系）</caption>
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">标签ID</th>
+                                                    <th scope="col">标签名</th>
+                                                    <th scope="col">标签描述</th>
+                                                    <th scope="col">操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="label in labelList">
+                                                    <th scope="row" ng-bind="$index+1"></th>
+                                                    <td>{{label.id}}</td>
+                                                    <td>{{label.labelName}}</td>
+                                                    <td>{{label.labelDes}}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger btn-sm"
+                                                        ng-click="deleteSetting(label)">删除
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var oContent = document.getElementById('inputText');
+
+        oContent.onmouseup = function () {
+            selectText();
+        };
+
+        function selectText() {
+            if (!document.Selection) {
+                var selectStr = window.getSelection().toString(); // 标准浏览器
+                if (selectStr != "") {
+                    console.log(selectStr);
+                    document.getElementById('nWord').value = selectStr;
+                }
+            } else {
+                return document.selection.createRange().text; // IE浏览器
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

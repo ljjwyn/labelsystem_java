@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="indexApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
+    <title>标注数据集管理</title>
+    <!-- Custom CSS -->
+    <link href="dist/css/style.css" rel="stylesheet">
+    <link href="css/sweetalert2.css" rel="stylesheet">
+    <script src="js/angular/1.6.3/angular.js"></script>
+    <script src="js/angular/1.6.3/angular-route.js"></script>
+    <script src="js/angular/1.6.3/angular-ui-router.js"></script>
+    <script src="js/angular/1.6.3/angular-file-upload.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/echarts-gl.min.js"></script>
+    <script src="ng/indexApp.js"></script>
+    <script src="ng/dataSetManageCtrl.js"></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body class="skin-default-dark fixed-layout" ng-controller="dataSetManageCtrl">
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="loader">
+            <div class="loader__figure"></div>
+            <p class="loader__label">Elegant admin</p>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <header class="topbar">
+            <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+                <!-- ============================================================== -->
+                <!-- Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">
+                        <!-- Logo icon --><b>
+                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                            <!-- Dark Logo icon -->
+                            <img src="assets/images/logo-icon.png" alt="homepage" class="dark-logo" />
+                            <!-- Light Logo icon -->
+                            <img src="assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />
+                        </b>
+                        <!--&lt;!&ndash;End Logo icon &ndash;&gt;-->
+                        <!--&lt;!&ndash; Logo text &ndash;&gt;<span>-->
+                         <!--&lt;!&ndash; dark Logo text &ndash;&gt;-->
+                         <!--<img src="assets/images/logo-text.png" alt="homepage" class="dark-logo" />-->
+                         <!--&lt;!&ndash; Light Logo text &ndash;&gt;    -->
+                         <!--<img src="assets/images/logo-light-text.png" class="light-logo" alt="homepage" /></span> </a>-->
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-collapse">
+                    <!-- ============================================================== -->
+                    <!-- toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav mr-auto">
+                        <!-- This is  -->
+                        <li class="nav-item hidden-sm-up"> <a class="nav-link nav-toggler waves-effect waves-light" href="javascript:void(0)"><i class="ti-menu"></i></a></li>
+                        <!-- ============================================================== -->
+                        <!-- Search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item search-box"> <a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i class="fa fa-search"></i></a>
+                            <form class="app-search">
+                                <input type="text" ng-model="searchtest" ng-keyup="testform($event)" class="form-control" placeholder="Search &amp; enter"> <a class="srh-btn"><i class="fa fa-times"></i></a>
+                            </form>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav my-lg-0">
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="index.html" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/logo.jpg" alt="user" class="img-circle" width="30"></a>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- ============================================================== -->
+        <!-- End Topbar header -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <aside class="left-sidebar">
+            <div class="d-flex no-block nav-text-box align-items-center">
+                <span><img src="assets/images/logo-icon.png" alt="elegant admin template"></span>
+                <a class="waves-effect waves-dark ml-auto hidden-sm-down" href="javascript:void(0)"><i class="ti-menu"></i></a>
+                <a class="nav-toggler waves-effect waves-dark ml-auto hidden-sm-up" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+            </div>
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <li> <a class="waves-effect waves-dark" href="index.html" aria-expanded="false"><i class="fa fa-tachometer"></i><span class="hide-menu">人工标注系统</span></a></li>
+                        <li> <a class="waves-effect waves-dark" href="pages-profile.html" aria-expanded="false"><i class="fa fa-user-circle-o"></i><span class="hide-menu">用户管理</span></a></li>
+                        <li> <a class="waves-effect waves-dark" href="table-basic.html" aria-expanded="false"><i class="fa fa-table"></i><span class="hide-menu"></span>标注集管理</a></li>
+                        <li> <a class="waves-effect waves-dark" href="pages-search.html" aria-expanded="false"><i class="fa fa-search"></i><span class="hide-menu"></span>实体检索</a></li>
+                        <li> <a class="waves-effect waves-dark" href="pages-labelitem.html" aria-expanded="false"><i class="fa fa-smile-o"></i><span class="hide-menu"></span>实体库构建</a></li>
+                        <li> <a class="waves-effect waves-dark" href="pages-error-404.html" aria-expanded="false"><i class="fa fa-question-circle"></i><span class="hide-menu"></span>测试</a></li>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+            <!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h4 class="text-themecolor">标注数据集管理</h4>
+                    </div>
+                    <div class="col-md-7 align-self-center text-right">
+                        <div class="d-flex justify-content-end align-items-center">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="javascript:void(0)">主页</a></li>
+                                <li class="breadcrumb-item active">标注数据集管理</li>
+                            </ol>
+                            <!--<button type="button" class="btn btn-success d-none d-lg-block m-l-15"> 标注系统</button>-->
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <!-- column -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">数据集列表</h4>
+                                <h6 class="card-subtitle">利用scrapy爬虫爬取的 <code>计算机相关文本</code></h6>
+                                <div class="table-responsive">
+                                    <table class="table" ng-init="getAllDataSet()">
+                                        <thead>
+                                        <tr class="default" style="background-color: #00a4e7;color:#fff;font-weight:normal">
+                                            <th style="font-weight:normal">数据集ID</th>
+                                            <th style="font-weight:normal">数据集名称</th>
+                                            <th style="font-weight:normal">数据表名称</th>
+                                            <th style="font-weight:normal">数据集条目</th>
+                                            <th style="font-weight:normal">标注条目</th>
+                                            <th style="font-weight:normal">标注率</th>
+                                            <th style="font-weight:normal">数据集描述</th>
+                                            <th colspan="2" style="font-weight:normal">操 作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="task in labelDataSetList" ng-click="showDataSetInfo(task)">
+                                            <td ng-style='{"background-color": task.id==currentTask.id? "#00a4e7": ""}'>{{task.id}}</td>
+                                            <td>{{task.dataSetName}}</td>
+                                            <td>{{task.dataSetColName}}</td>
+                                            <td>{{task.dataSetNum}}</td>
+                                            <td>{{task.labeledNum}}</td>
+                                            <td>{{(task.labelRate*100) | number: 2}} %</td>
+                                            <td>{{task.dataSetDes}}</td>
+                                            <td>
+                                                <button type="button"
+                                                        class="btn btn-danger btn-sm btn-block"
+                                                        ng-click="rebuildSentence(task)">
+                                                    <span class="fa fa-recycle">初始化</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row" ng-show="labeledInfoShow">
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-sm btn-success btn-block"
+                                                ng-click="knowledgeGraph()" >
+                                            <span class="fa fa-expand" aria-hidden="true">加载图谱</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-sm btn-success btn-block"
+                                                ng-click="downloadShowCtrl()" >
+                                            <span class="fa fa-download" aria-hidden="true">下载文件</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="knowledgeGraphShow">
+                    <!-- column -->
+                    <div class="col-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">图谱预览</h4>
+                                <h6 class="card-subtitle">已标注数据知识图谱预览</h6>
+                                <div class="row" style="margin-top: 20px">
+                                    <!--<div class="col-md-1">-->
+                                        <!--<button type="button" class="btn btn-sm btn-success btn-block"-->
+                                                <!--ng-click="showKnowledgeGraph()" >-->
+                                            <!--<span class="glyphicon glyphicon-log-in" aria-hidden="true">加载</span>-->
+                                        <!--</button>-->
+                                    <!--</div>-->
+                                    <div class="col-md-12 row">
+                                        <label class="col-md-1 col-form-label">实体名</label>
+                                        <div class="col-md-3">
+                                            <input type="text" class="form-control" placeholder="实体名称" ng-model="searchContent"
+                                                   style="width: 100%">
+                                        </div>
+                                        <label class="col-md-1 col-form-label">深度</label>
+                                        <div class="col-md-2">
+                                            <select id="configselect" class="form-control" style="width: 100%;">
+                                                <option ng-repeat="deep in searchDeep" value="{{deep}}"
+                                                >{{deep}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn btn-info search-btn" ng-click="fuzzySearch()">
+                                                <span class="fa fa-search">检索实体</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-light btn-sm m-1" style="margin-left: 5px;margin-top: 5px "
+                                                    ng-repeat="entity in fuzzyEntityList" ng-click="searchEntityInfo(entity)"
+                                                    ng-style='{"background-color": entity==currentEntity? "#00a4e7": ""}'>{{entity}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" style="margin-top: 10px">
+                                    <div class="panel panel-default">
+                                        <div id="knowledgeGraph"  style="height:700px;width:100%;" ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">标注详情</h4>
+                                <h6 class="card-subtitle">已标注实体、关系、类别详情</h6>
+                                <div class="panel panel-default">
+                                    <textarea class="form-control"
+                                              rows="25" placeholder="图谱详情"
+                                              ng-model="graphInfo" readonly
+                                              style="font-family: 'Courier New', Courier, monospace;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="downloadShow">
+                    <!-- column -->
+                    <div class="col-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">构造数据集</h4>
+                                <h6 class="card-subtitle">基于算法平台数据集格式构造关系抽取数据集预览</h6>
+                                <div class="panel panel-success">
+                                    <textarea class="form-control"
+                                              rows="20" placeholder="命名实体识别数据集预览"
+                                              ng-model="REData" readonly
+                                              style="font-family: 'Courier New', Courier, monospace;"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-sm btn-success btn-block"
+                                                ng-click="downloadDataSet()" >
+                                            <span class="glyphicon glyphicon-download" aria-hidden="true">下载关系抽取</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-sm btn-success btn-block"
+                                                ng-click="downloadClass()" >
+                                            <span class="glyphicon glyphicon-download" aria-hidden="true">下载关系类</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">关系预览</h4>
+                                <h6 class="card-subtitle">标注的关系去重预览</h6>
+                                <textarea class="form-control"
+                                          rows="20" placeholder="关系类预览"
+                                          ng-model="relationType" readonly
+                                          style="font-family: 'Courier New', Courier, monospace;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                <!-- ============================================================== -->
+                <!-- End PAge Content -->
+                <!-- ============================================================== -->
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- footer -->
+        <!-- ============================================================== -->
+            <footer class="footer">
+                Copyright &copy; Li Jiajie 2020
+            </footer>
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
+    <script src="assets/node_modules/jquery/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="assets/node_modules/popper/popper.min.js"></script>
+    <script src="assets/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="dist/js/perfect-scrollbar.jquery.min.js"></script>
+    <!--Wave Effects -->
+    <script src="dist/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="dist/js/sidebarmenu.js"></script>
+    <!--stickey kit -->
+    <script src="assets/node_modules/sticky-kit-master/dist/sticky-kit.min.js"></script>
+    <script src="assets/node_modules/sparkline/jquery.sparkline.min.js"></script>
+    <!--Custom JavaScript -->
+    <script src="dist/js/custom.min.js"></script>
+</body>
+
+</html>

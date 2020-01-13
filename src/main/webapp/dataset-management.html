@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html ng-app="indexApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link href="css/jquery-ui.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/sweetalert2.css" rel="stylesheet">
+    <script src="js/angular/1.6.3/angular.js"></script>
+    <script src="js/angular/1.6.3/angular-route.js"></script>
+    <script src="js/angular/1.6.3/angular-ui-router.js"></script>
+    <script src="js/angular/1.6.3/angular-file-upload.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/echarts-gl.min.js"></script>
+    <script src="ng/indexApp.js"></script>
+    <script src="ng/dataSetManageCtrl.js"></script>
+    <title>标记数据集管理</title>
+</head>
+<body ng-controller="dataSetManageCtrl">
+<div class="container-fluid">
+    <div class="col-md-5" style="float: right">
+        <a href="logout" style="float: right; width: 10%">注销</a>
+        <label style="float: right">当前用户名:<font color="red">{{userName}} </font></label>
+    </div>
+    <h3 class="page-header" style="">标注数据集
+        <a type="button"
+           class="btn btn-info btn-sm btn-block"
+           style="float: right; width: 10%"
+           href="relationItem.html">人工标注系统
+        </a>
+    </h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-collapse" >
+                <div class="panel-heading">建模任务列表</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" placeholder="任务ID" ng-model="searchParam"
+                                   style="width: 50%;display: inline;padding-bottom: 10px">
+                            <button class="btn btn-info search-btn" ng-click="searchTask()">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </div>
+                        <div class="col-md-2 col-md-offset-2">
+
+                            <button type="button" class="btn btn-sm btn-default btn-block"
+                                    ng-click="getAllTasks()" >
+                                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12" style="max-height:450px;overflow:auto">
+                            <table
+                                    class="table table-bordered table-striped table-condensed table-hover"
+                                    ng-init="getAllDataSet()">
+                                <thead>
+                                <tr class="default" style="background-color: #00a4e7;color:#fff;font-weight:normal">
+                                    <th style="font-weight:normal">数据集ID</th>
+                                    <th style="font-weight:normal">数据集名称</th>
+                                    <th style="font-weight:normal">数据表名称</th>
+                                    <th style="font-weight:normal">数据集条目</th>
+                                    <th style="font-weight:normal">标注条目</th>
+                                    <th style="font-weight:normal">标注率</th>
+                                    <th style="font-weight:normal">数据集描述</th>
+                                    <th colspan="2" style="font-weight:normal">操 作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="task in labelDataSetList" ng-click="showDataSetInfo(task)">
+                                    <td ng-style='{"background-color": task.id==currentTask.id? "#00a4e7": ""}'>{{task.id}}</td>
+                                    <td>{{task.dataSetName}}</td>
+                                    <td>{{task.dataSetColName}}</td>
+                                    <td>{{task.dataSetNum}}</td>
+                                    <td>{{task.labeledNum}}</td>
+                                    <td>{{(task.labelRate*100) | number: 2}} %</td>
+                                    <td>{{task.dataSetDes}}</td>
+                                    <td>
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs btn-block"
+                                                ng-click="rebuildSentence(task)">
+                                            <span class="fa fa-recycle">初始化</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="labeledInfoShow">
+        <div class="col-md-12">
+            <div class="panel panel-collapse" >
+                <div class="panel-heading">标注数据集详情</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-sm btn-success btn-block"
+                                    ng-click="knowledgeGraph()" >
+                                <span class="glyphicon glyphicon-expand" aria-hidden="true">加载图谱</span>
+                            </button>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-sm btn-success btn-block"
+                                    ng-click="downloadShowCtrl()" >
+                                <span class="glyphicon glyphicon-download-alt" aria-hidden="true">下载文件</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-collapse" ng-show="knowledgeGraphShow">
+                        <div class="row" style="margin-top: 20px">
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-sm btn-success btn-block"
+                                        ng-click="showKnowledgeGraph()" >
+                                    <span class="glyphicon glyphicon-log-in" aria-hidden="true">加载</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px" ng-show="knowledgeGraphShow">
+                            <div class="col-md-8" style="margin-top: 10px">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        标注集图谱
+                                    </div>
+                                    <div id="knowledgeGraph"  style="height:700px;width:100%;" ></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4" style="margin-top: 10px">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        图谱详情
+                                    </div>
+                                    <textarea class="form-control"
+                                              rows="20" placeholder="图谱详情"
+                                              ng-model="graphInfo" readonly
+                                              style="font-family: 'Courier New', Courier, monospace;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 20px" ng-show="downloadShow">
+                        <div class="panel panel-collapse" >
+                            <div class="panel-heading">构建数据集预览</div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-8" style="margin-top: 10px">
+                                        <div class="panel panel-success">
+                                            <div class="panel-heading">
+                                                构建命名实体识别数据集预览
+                                            </div>
+                                            <textarea class="form-control"
+                                                      rows="20" placeholder="命名实体识别数据集预览"
+                                                      ng-model="REData" readonly
+                                                      style="font-family: 'Courier New', Courier, monospace;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" style="margin-top: 10px">
+                                        <div class="panel panel-success">
+                                            <div class="panel-heading">
+                                                关系类预览
+                                            </div>
+                                            <textarea class="form-control"
+                                                      rows="20" placeholder="关系类预览"
+                                                      ng-model="relationType" readonly
+                                                      style="font-family: 'Courier New', Courier, monospace;"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-sm btn-success btn-block"
+                                                ng-click="downloadDataSet()" >
+                                            <span class="glyphicon glyphicon-download" aria-hidden="true">下载关系抽取</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-sm btn-success btn-block"
+                                                ng-click="downloadClass()" >
+                                            <span class="glyphicon glyphicon-download" aria-hidden="true">下载关系类</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

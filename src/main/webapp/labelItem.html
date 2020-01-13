@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html ng-app="indexApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!--<link href="css/bootstrap-theme.css" rel="stylesheet">-->
+    <link href="css/jquery-ui.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="js/angular/1.6.3/angular.js"></script>
+    <script src="js/angular/1.6.3/angular-route.js"></script>
+    <script src="js/angular/1.6.3/angular-ui-router.js"></script>
+    <script src="js/angular/1.6.3/angular-file-upload.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <script src="ng/indexApp.js"></script>
+    <script src="ng/setLabelctrl.js"></script>
+    <title>itemInfo</title>
+</head>
+<body ng-controller="setLabels">
+<div class="row;container">
+    <div class="col-sm-8">
+        <div class="panel panel-default" >
+            <div class="panel-body">
+                <p><span style="font-size: x-large; ">{{title}}</span></p>
+                <div class="col-md-12">
+                    <div class="panel panel-default" >
+                        <div class="panel-heading">摘要</div>
+                        <div class="panel-body">
+                            <div class="col-sm-7" style="margin:auto">
+                                <h2 class="h2-title">摘要</h2>
+                                <p>{{summarys}}</p>
+                            </div>
+                            <div class="col-sm-5" style="float: right">
+                                <!-- 如果有摘要图片则显示摘要图片，右侧显示摘要 -->
+                                <img alt={{title}} src={{imgUrl}}>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" >
+                        <div class="panel-heading">目录</div>
+                        <div class="panel-body">
+                            <div class="module zoom">
+                                <h2 class="h2-title">基本信息</h2>
+                                <table>
+                                    <tr ng-repeat="index in indexList">
+                                        <td>
+                                            <strong >{{catalogList[index]}}</strong>
+                                            <span>{{contentList[index]}}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4" style="margin-top: 20px">
+        <div class="panel panel-default" >
+            <div class="panel-heading">标签</div>
+            <div class="panel-body">
+                <h1>#{{ID}}</h1>
+                <input type="checkbox" id="label" ng-click="updateKeys($event,0)">
+                <label>0、其他无关实体（汽车）</label>
+                <br>
+                <input type="checkbox" id="label1" ng-click="updateKeys($event,1)">
+                <label>1、计算机技术类客观存在实体（电脑、服务器）</label>
+                <br>
+                <input type="checkbox" id="label2" ng-click="updateKeys($event,2)">
+                <label>2、算法、数学公式（支持向量机）</label>
+                <br>
+                <input type="checkbox" id="label3" ng-click="updateKeys($event,3)">
+                <label>3、技术术语（数据挖掘、人机交互）</label>
+                <br>
+                <input type="checkbox" id="label4" ng-click="updateKeys($event,4)">
+                <label>4、技术类书籍</label>
+                <br>
+                <div class="col-md-3">
+                    <button type="button"
+                            class="btn btn-primary btn-sm btn-block"
+                            ng-click="confirmLabel(x)">确认
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html ng-app="indexApp">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Kodinger">
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/my-login.css">
+    <link href="css/sweetalert2.css" rel="stylesheet">
+	<script src="js/jquery.min.js"></script>
+    <script src="js/angular/1.6.3/angular.js"></script>
+    <script src="js/angular/1.6.3/angular-route.js"></script>
+    <script src="js/angular/1.6.3/angular-ui-router.js"></script>
+    <script src="js/angular/1.6.3/angular-file-upload.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+	<script src="js/my-login.js"></script>
+    <script src="ng/indexApp.js"></script>
+    <script src="ng/loginCtrl.js"></script>
+	<link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
+	<title>标注系统-登录</title>
+</head>
+<body class="my-login-page" ng-controller="loginCtrl">
+<section class="h-100">
+	<div class="container h-100">
+		<div class="row justify-content-md-center h-100">
+			<div class="card-wrapper">
+				<div class="brand">
+					<img src="img/logo.jpg">
+				</div>
+				<div class="card fat">
+					<div class="card-body">
+						<h4 class="card-title">登录</h4>
+						<form method="POST">
+
+							<div class="form-group">
+								<label for="email">用户名(email)</label>
+
+								<input id="email" type="email" class="form-control" name="email"
+                                       ng-model="userName" value="" required autofocus>
+							</div>
+
+							<div class="form-group">
+								<label for="password">密码
+									<a href="forgot.html" class="float-right">
+										忘记密码?
+									</a>
+								</label>
+								<input id="password" type="password" class="form-control"
+                                       ng-model="password" name="password" required data-eye>
+							</div>
+
+							<div class="form-group">
+								<label>
+									<input type="checkbox" name="remember"> Remember Me
+								</label>
+							</div>
+
+							<div class="form-group no-margin">
+								<button type="submit" class="btn btn-primary btn-block"
+                                ng-click="login()">
+									登录
+								</button>
+							</div>
+							<div class="margin-top20 text-center">
+								木有账号的话? <a href="register.html">注册一个呗</a>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="footer">
+					Copyright &copy; Li Jiajie 2020
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html ng-app="indexApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!--<link href="css/bootstrap-theme.css" rel="stylesheet">-->
+    <link href="css/jquery-ui.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="js/angular/1.6.3/angular.js"></script>
+    <script src="js/angular/1.6.3/angular-route.js"></script>
+    <script src="js/angular/1.6.3/angular-ui-router.js"></script>
+    <script src="js/angular/1.6.3/angular-file-upload.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <script src="ng/indexApp.js"></script>
+    <script src="ng/searchCtrl.js"></script>
+    <title>search_baike</title>
+</head>
+<body ng-controller="searchCtrl">
+<div class="container">
+    <h3 class="page-header" style="">关键词检索系统
+        <a type="button"
+           class="btn btn-info btn-sm btn-block"
+           style="float: right; width: 10%"
+           href="data-computing.html">标注系统
+        </a>
+    </h3>
+</div>
+
+<!-- 任务列表 -->
+<div class="row;container">
+    <div class="col-md-12">
+        <div class="panel panel-default" >
+            <div class="panel-heading">关键词</div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" placeholder="关键词" ng-model="keywords"
+                               style="width: 50%;display: inline;padding-bottom: 10px">
+                        <button class="btn btn-info search-btn" ng-click="searchKeywords()">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row;container" ng-repeat="x in keywordsList">
+    <div class="col-md-9">
+        <div class="panel panel-default" >
+            <div class="panel-body">
+                <div class="col-md-3">
+                    <h3>{{x.title}}</h3>
+                    <!-- 如果有摘要图片则显示摘要图片，右侧显示摘要 -->
+
+                    <a target="_blank" title='1' class="l mar-r20 aimg7"><img alt={{x.title}} src={{x.imgUrl}}></a>
+                </div>
+                <div class="col-md-8" style="margin:auto;margin-top: 50px">
+                    <p>{{x.summarys}}</p>
+                    <div class="col-md-3">
+                        <button type="button"
+                                class="btn btn-primary btn-sm btn-block"
+                                ng-click="intoItem(x)">进入词条
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
